@@ -4,7 +4,7 @@ var a=100;
 var b=100;
 
 function draw_one_frame() {
-  //background(255);
+  background(255);
   x+=2;
   y+=2;
 	a-=2;
@@ -18,14 +18,14 @@ function draw_one_frame() {
 	  fill(255,255-i*10,255-k*10);
   	line(a%100,b%100,x%300,y%300);
 	  ellipse((x+i*20)%width,(y+k*20)%height,i+4,i+4);
-		drawtriangle((a-i*20)%width,(b-k*20)%height,k/8);
-		rect(x%width, y%height, k+10, k+10);
+		//drawtriangle((a-i*20)%width,(b-k*20)%height,k/8);
+		//rect(x%width, y%height, k+10, k+10);
 		fill(0,i*10,255-k*10);
-		ellipse((x-i*20)%width,(y-k*20)%height,i+3,i+3);
+		//ellipse((x-i*20)%width,(y-k*20)%height,i+3,i+3);
 		rotate(PI / 24.0);
 		fill(255-(i+k)*5,(i+k)*7,i*20);
-		drawtriangle((a+i*20)%width,(b+k*20)%height,k/8);
-		rect(a%width, b%height, k+5, k+5);
+		//drawtriangle((a+i*20)%width,(b+k*20)%height,k/8);
+		//rect(a%width, b%height, k+5, k+5);
 		drawflower(k,x);
 	  }
   }
