@@ -1,64 +1,169 @@
-var x=300;
-var y=300;
-var a=100;
-var b=100;
+/* 
+   getNoiseValue arguments:
+     x: current grid location across
+     y: current grid location down
+     loop: can be any value from 0-1 and will loop
+     name: the "name" of the lookup table. probably change this each time.
+     min/max: the minimum and maximum of the value to return
+     smoothness: 1 means elements are not related. larger numbers cause groupings.
+*/
+function draw_one_frame(cur_frac) {
+//////////////////////////////////////////////Noise setup/////////////////////////////////////////
+noStroke();
+let backgroundColor = color("#dbbea1");
+fill(backgroundColor);
+//rect(0,0, width, height)
 
-function draw_one_frame() {
-  background(0);
-  x+=2;
-  y+=2;
-	a-=2;
-	b-=2;
-	strokeWeight(0);
-	
-  translate(width/2, height/2);
-  for(var i=0;i<15;i++){
-	  for(var k=0;k<20;k++){
-		stroke(1,1,1);
-   // rotate(PI / 12.0);
-	 // fill(255,255-i*10,255-k*10);
-  	//line(a%100,b%100,x%300,y%300);
-	 // ellipse((x+i*20)%width,(y+k*20)%height,i+4,i+4);
-	//	drawtriangle((a-i*20)%width,(b-k*20)%height,k/8);
-	//	rect(x%width, y%height, k+10, k+10);
-		fill(0,i*10,255-k*10);
-	//	ellipse((x-i*20)%width,(y-k*20)%height,i+3,i+3); //wirlpool circle
-		rotate(PI / 24.0);
-		fill(255-(i+k)*5,(i+k)*7,i*20);
-		//drawtriangle((a+i*20)%width,(b+k*20)%height,k/8); //swirl triangles
-	//	rect(a%width, b%height, k+5, k+5); //swirl rectange
-		drawflower(k,x);
+let mainColor = color("#3F292B"); // brown
+let backupColor = color("#D34F73"); // blush
+let DetailColor = color("#DB7F67");
+
+
+let noiseColor;
+let noiseyColor; 
+let moveXMap;
+let moveXMap2;
+
+
+let orbSize = width / 100;
+let spacingSize = width / 19;
+let numb = ['1','2','3','4','5','6','7','8','9','0'];
+//let backfill = ['100,216,107,100','255, 255, 255,100'];
+
+
+//////////////////////////////////////////////Noise part/////////////////////////////////////////
+fill(mainColor);
+
+for(let accross = 1; accross < width /spacingSize; accross++ ){
+	for(let down = 1; down +1 < height /spacingSize; down++){		
 		
-	  }
+	noiseColor = getNoiseValue(spacingSize*accross,spacingSize*down, cur_frac, "noiseColor",0,1, 200 );
+	noiseyLerp = lerpColor(mainColor,backupColor,noiseColor)  // https://p5js.org/reference/#/p5/lerpColor
+	fill(noiseyLerp);
+	//ellipse(spacingSize*accross,spacingSize*down ,orbSize)
+
+		if(cur_frac > 0.3 && noiseColor < 0.3){
+			fill(225)
+			noiseSeed(-100);
+			moveXMap = map(cur_frac,0.3, 1, spacingSize*accross, spacingSize*(accross+1));
+			moveXMap2 = map(cur_frac-100,0, 100, spacingSize*accross, spacingSize*(accross+5));
+			
+			//ellipse(moveXMap,spacingSize*down,orbSize/15)
+
+            ////////bacgkround text//////
+			fill(100,216,107,75);
+			textSize(20);
+			text(random(numb), moveXMap,spacingSize*down,orbSize);
+			fill(255,255,255,75);
+			text(random(numb), moveXMap2,spacingSize*down,orbSize);
+
+//////////////////////////////////////////////ease part/////////////////////////////////////////
+			let grid_points = [
+				0 * height,
+				1 * height,
+				25 * height,
+				0 * height,
+				1 * height,
+			  ]
+			
+			  if (debugView) {
+				strokeWeight(1);
+				stroke(255, 0, 0);
+				for(let i=0; i<grid_points.length; i++) {
+				  line(0, grid_points[i], width, grid_points[i]);
+				}
+			  }
+			
+			  strokeWeight(2);
+			  stroke(0);
+			  for(let i=0; i<grid_points.length-1; i++) {
+				let cur_grid_line = map(cur_frac-40, 1, -6, grid_points[i], grid_points[i+1])
+				let numb = ['1','2','3','4','5','6','7','8','9','0'];
+			   // line(0, cur_grid_line, width, cur_grid_line);
+				//ellipse(width/2,cur_grid_line, width/10, width/10)
+				fill(100,216,107);
+				textSize(75);
+
+				 
+				text(random(numb), width/2,cur_grid_line/1, 1, width/1)
+			
+			//	text(random(numb), width/3,cur_grid_line, width/10, width/10)
+			
+			//	text(random(numb), width/6,cur_grid_line, width/10, width/10)
+			
+			//	text(random(numb), width/1,cur_grid_line, width/10, width/10)
+			
+			//	text(random(numb), width/1.5,cur_grid_line, width/10, width/10)
+			
+			//	text(random(numb), width/1.2,cur_grid_line, width/10, width/10)
+			
+			//	text(random(numb), width/50,cur_grid_line, width/10, width/10)
+			
+		}
+	}
+}
+}
+
+
+
+
+
+strokeWeight(10);
+let grid_points = [
+  0 * height,
+  0.53 * height,
+  0.60 * height,
+  0.75 * height,
+  1.00 * height,
+  4 * height
+]
+
+if (debugView) {
+  strokeWeight(1);
+  stroke(255, 0, 0);
+  for(let i=0; i<grid_points.length; i++) {
+	line(0, grid_points[i], width, grid_points[i]);
   }
-
-}
-//this is the drawing triangle
-function drawtriangle(x,y,r){
-	//triangle(x, y, x+7*r, y-13.75*r, x+14*r, y);
 }
 
+strokeWeight(2);
+stroke(0);
+for(let i=0; i<grid_points.length-1; i++) {
+  let cur_grid_line = map(cur_frac, 0, 1, grid_points[i], grid_points[i+1]);
+ // line(0, cur_grid_line, width, cur_grid_line);
+  //ellipse(width/2,cur_grid_line, width/10, width/10)
+  //text(random(numb), width/2,cur_grid_line/1, 1, width/1)
 
-//This is the central circle in the centre
-function drawflower(i,k){
-		if(i%2==1){
-			rotate(random);
-			//fill(255,(k*0.4)%255,30);
-			fill(255);
-			ellipse(0,0,100,100);
-			fill(249, 252, 43);
-			stroke(k%249, 252, 43);
-			arc(0,0,200+i+300*sin(k*PI/24),100,400,PI / 40);
-			fill(255);
-			ellipse(0,0,200,200);
-		}
-		else{
-			//fill(k%255,0,255);
-			//stroke(0,(k*0.4)%255,255);
-			//arc(0,0,(100+100*cos(k*PI/24))%255,50,0,PI / 20);
-		}
+  //ellipse(width/3,cur_grid_line, width/10, width/10)
+  //text(random(numb), width/3,cur_grid_line/1, 1, width/1)
 
-fill(255);
-//ellipse(25,25,25,25);
+  //ellipse(width/6,cur_grid_line, width/10, width/10)
+
+  text(random(numb), 0,cur_grid_line/1, 1, width/1);
+
+  text(random(numb), 100,cur_grid_line/1, 1, width/1);
+
+  text(random(numb), 200,cur_grid_line/1, 1, width/1);
+
+  text(random(numb), 300,cur_grid_line/1, 1, width/1);
+
+  text(random(numb), 400,cur_grid_line/1, 1, width/1);
+
+  text(random(numb), 500,cur_grid_line/1, 1, width/1);
+
+  text(random(numb), 600,cur_grid_line/1, 1, width/1);
+
+  text(random(numb), 700,cur_grid_line/1, 1, width/1);
+
+  text(random(numb), 800,cur_grid_line/1, 1, width/1);
+
+  text(random(numb), 900,cur_grid_line/1, 1, width/1);
+
+  text(random(numb), 1000,cur_grid_line/1, 1, width/1);
+
+
+}
+
+
 
 }
